@@ -1,0 +1,245 @@
+<H1> Employees </H1>
+
+<% employees.forEach(employee => { %>
+  <li id="employee-<%= employee._id %>">
+    <!-- View Mode: Display employee details -->
+    <span id="employee-name-<%= employee._id %>"><%= employee.name %></span>
+    <div id="employee-view-<%= employee._id %>" class="employee-view">
+      <!-- You can display more fields here -->
+    </div>
+
+    <!-- Update Form (Initially hidden) -->
+    <form action="/admin/add-employee" method="POST" class="update-form" id="update-form-<%= employee._id %>" style="display: none;">
+     <label for="name">Name</label>
+      <input type="text" name="name" value="<%= employee.name %>" />
+      <label for="email">email</label>
+      <input type="text" name="email" value="<%= employee.email %>" />
+      <input type="hidden" name="employeeId" value="<%= employee._id %>" />
+      <label for="isAdmin">isAdmin</label>
+      <select name="isAdmin">
+        <option value = "true">True</option>
+        <option value="false"> False </option>
+      </select>
+      <button type="submit">Update</button>
+      <button type="button" onclick="cancelUpdate('<%= employee._id %>')">Cancel</button>
+    </form>
+
+    <!-- Default Buttons -->
+    <button type="button" onclick="startUpdate('<%= employee._id %>')">Update</button>
+    <button type="button" onclick="viewEmployee('<%= employee._id %>', '<%= employee.email %>', '<%= employee.isAdmin %>')">View</button>
+    <form action="/admin/remove-employee" method="POST">
+      <input type="hidden" name="employeeId" value="<%= employee._id %>" />
+      <button type="submit">Remove</button>
+    </form>
+  </li>
+<% }); %>
+<style>
+  /* General Styles */
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f4f7fc;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  /* List Style */
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+.update-form{
+  display: grid;
+  gap: 20px;  
+  position: absolute; /* Absolute positioning */
+  top: 50%; /* Move 50% down from the top */
+  left: 50%; /* Move 50% right from the left */
+  transform: translate(-50%, -50%); /* Adjust to perfectly center */
+  width: 400px; /* Set a fixed width for the form (adjust as needed) */
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.update-form label {
+  font-weight: bold;
+  margin-top: 10px;  /* Adds space above each label */
+}
+.update-form button{
+  width:10vw;
+}
+  li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+
+  li:hover {
+    transform: scale(1.03);
+  }
+
+  /* Styling for the Update Form */
+  form {
+    margin-top: 15px;
+    display: grid;
+    gap: 10px;
+    padding: 20px;
+    background-color: #fafafa;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }
+
+  form label {
+    font-weight: bold;
+  }
+
+  form input,
+  form select,
+  form button {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+  }
+
+  form button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  form button:hover {
+    background-color: #45a049;
+  }
+
+  form button[type="button"] {
+    background-color: #f44336;
+  }
+
+  form button[type="button"]:hover {
+    background-color: #da190b;
+  }
+
+  /* Button Styling */
+  button {
+    background-color: #008CBA;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  button:hover {
+    background-color: #007bb5;
+  }
+
+  button[type="button"]:focus {
+    outline: none;
+  }
+
+  /* Employee View Style */
+  .employee-view {
+    margin-top: 10px;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    display: none; /* Initially hidden */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40vw;
+    height: 25vh;
+    align-content: center;
+    justify-items: center;
+    background-color: burlywood;
+  }
+
+  /* Miscellaneous Style */
+  .employee-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  /* On Hover Effects */
+  .employee-actions button:hover {
+    transform: scale(1.05);
+  }
+
+  .employee-actions form button {
+    margin-top: 5px;
+    padding: 8px 15px;
+    background-color: #e74c3c;
+  }
+
+  .employee-actions form button:hover {
+    background-color: #c0392b;
+  }
+
+</style>
+<script>
+  // Function to handle the 'Update' button click
+  function startUpdate(employeeId) {
+    // Show the update form and hide the employee details
+    document.getElementById('employee-view-' + employeeId).style.display = 'none';
+    document.getElementById('update-form-' + employeeId).style.display = 'block';
+  }
+
+  // Function to handle the 'Cancel' button click in the update form
+  function cancelUpdate(employeeId) {
+    // Hide the update form and show the employee details again
+    document.getElementById('employee-view-' + employeeId).style.display = 'block';
+    document.getElementById('update-form-' + employeeId).style.display = 'none';
+  }
+
+  // Function to handle the 'View' button click
+  function viewEmployee(employeeId, email, isAdmin) {
+  console.log(employeeId, email, isAdmin);
+  
+  // Get the employee view div using the employeeId
+  const employeeViewDiv = document.getElementById('employee-view-' + employeeId);
+
+  if (!employeeViewDiv) {
+    console.error('Employee view div not found!');
+    return; // Prevent further execution if the element doesn't exist
+  }
+  employeeViewDiv.innerHTML = ""
+  // Show the employee details div
+  employeeViewDiv.style.display = 'block';
+
+  // Create new elements to display employee details
+  const emailParagraph = document.createElement('p');
+  emailParagraph.textContent = `Email: ${email}`;
+  
+  const isAdminParagraph = document.createElement('p');
+  isAdminParagraph.textContent = `isAdmin: ${isAdmin}`;
+  const closeButton = document.createElement("button")
+  closeButton.innerText = "Close"
+  closeButton.onclick = function(){
+    employeeViewDiv.style.display = "none";
+  }
+  // Append the new paragraphs to the employee view section
+  employeeViewDiv.appendChild(emailParagraph);
+  employeeViewDiv.appendChild(isAdminParagraph);
+  employeeViewDiv.appendChild(closeButton);
+
+  // Optionally, you can hide the update form if needed:
+  // document.getElementById('update-form-' + employeeId).style.display = 'none';
+}
+
+</script>

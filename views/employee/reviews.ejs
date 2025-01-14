@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reviews Needing Feedback</title>
+  <style>
+    /* Global Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      color: #333;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 20px auto;
+      width: 80%;
+    }
+
+    li {
+      background-color: bisque;
+      margin-bottom: 20px;
+      padding: 15px;
+      text-align: center;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    li:hover {
+      transform: translateY(-5px);
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    form {
+      display: none;
+      margin-top: 10px;
+    }
+
+    textarea {
+      width: 90%;
+      height: 100px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    textarea:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+
+    /* Centering the submit form inside the container */
+    .submit-form-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .submit-form-container button {
+      background-color: #28a745;
+      border-radius: 5px;
+    }
+
+    .submit-form-container button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <h1>Your Reviews</h1>
+  <ul>
+    <% reviews.forEach(review => { %>
+      <li>
+        <% console.log(review) %>
+       <b> Reviewer</b> : <em><%= review.reviewerDetails.name %> </em><br>
+      <b>Review Note </b> : </em><%= review.review %> <br></em>
+        <button type="button" onclick="handleFeedback()">Feedback!</button>
+        <form style="display: none;" id="submitform" action="/employee/submit-feedback" method="POST">
+          <input type="hidden" name="reviewId" value="<%= review._id %>" />
+          <textarea name="feedback"><%= review.feedback %></textarea>
+          <button type="submit" onclick="close()">Submit Feedback</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
+</body>
+<script>
+           function handleFeedback(){
+            const submitForm = document.getElementById('submitform');
+            submitForm.style.display = 'block';
+           }
+           function close(){
+            const submitForm = document.getElementById('submitform');
+            submitForm.style.display = 'none';
+           }
+</script>
+</html>
